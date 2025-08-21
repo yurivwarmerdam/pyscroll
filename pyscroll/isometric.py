@@ -2,6 +2,7 @@ import logging
 
 from pyscroll.common import Vector2D, Vector2DInt
 from pyscroll.orthographic import BufferedRenderer
+from pygame.surface import Surface
 
 log = logging.getLogger(__file__)
 
@@ -73,13 +74,13 @@ class IsometricBufferedRenderer(BufferedRenderer):
         self._x_offset = 0
         self._y_offset = 0
 
-        self.redraw_tiles()
+        self.redraw_tiles(self._buffer)
 
-    def _flush_tile_queue(self) -> None:
+    def _flush_tile_queue(self, surface: Surface) -> None:
         """Blits (x, y, layer) tuples to buffer from iterator"""
         iterator = self._tile_queue
         surface_blit = self._buffer.blit
-        map_get = self._animation_map.get
+        # map_get = self._animation_map.get
 
         bw, bh = self._buffer.get_size()
         bw /= 2
@@ -88,8 +89,8 @@ class IsometricBufferedRenderer(BufferedRenderer):
         twh = tw // 2
         thh = th // 2
 
-        for x, y, l, tile, gid in iterator:
-            tile = map_get(gid, tile)
+        for x, y, l, tile in iterator:
+            # tile = map_get(gid, tile)
             x -= self._tile_view.left
             y -= self._tile_view.top
 
@@ -139,7 +140,7 @@ class IsometricBufferedRenderer(BufferedRenderer):
         elif view_change > self._redraw_cutoff:
             # logger.info('scrolling too quickly.  redraw forced')
             self._tile_view.move_ip(dx, dy)
-            self.redraw_tiles()
+            self.redraw_tiles(self._buffer)
 
     # def redraw_tiles(self):
     #     """ redraw the visible portion of the buffer -- it is slow.
