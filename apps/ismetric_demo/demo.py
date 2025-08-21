@@ -62,8 +62,8 @@ class ScrollTest:
 
         # set our initial viewpoint in the center of the map
         self.center = [
-            self.map_layer.map_rect.width / 2,
-            self.map_layer.map_rect.height / 2,
+            -self.map_layer.map_rect.width / 2,
+            -self.map_layer.map_rect.height / 2,
         ]
 
         # the camera vector is used to handle camera movement
@@ -140,23 +140,23 @@ class ScrollTest:
         self.camera_vel[1] *= friction
 
         # make sure the movement vector stops when scrolling off the screen
-        if self.center[0] < 0:
-            self.center[0] -= self.camera_vel[0]
-            self.camera_acc[0] = 0
-            self.camera_vel[0] = 0
-        if self.center[0] >= self.map_layer.map_rect.width:
-            self.center[0] -= self.camera_vel[0]
-            self.camera_acc[0] = 0
-            self.camera_vel[0] = 0
+        # if self.center[0] < 0:
+        #     self.center[0] -= self.camera_vel[0]
+        #     self.camera_acc[0] = 0
+        #     self.camera_vel[0] = 0
+        # if self.center[0] >= self.map_layer.map_rect.width:
+        #     self.center[0] -= self.camera_vel[0]
+        #     self.camera_acc[0] = 0
+        #     self.camera_vel[0] = 0
 
-        if self.center[1] < 0:
-            self.center[1] -= self.camera_vel[1]
-            self.camera_acc[1] = 0
-            self.camera_vel[1] = 0
-        if self.center[1] >= self.map_layer.map_rect.height:
-            self.center[1] -= self.camera_vel[1]
-            self.camera_acc[1] = 0
-            self.camera_vel[1] = 0
+        # if self.center[1] < 0:
+        #     self.center[1] -= self.camera_vel[1]
+        #     self.camera_acc[1] = 0
+        #     self.camera_vel[1] = 0
+        # if self.center[1] >= self.map_layer.map_rect.height:
+        #     self.center[1] -= self.camera_vel[1]
+        #     self.camera_acc[1] = 0
+        #     self.camera_vel[1] = 0
 
         self.center[0] += self.camera_vel[0]
         self.center[1] += self.camera_vel[1]
@@ -164,6 +164,7 @@ class ScrollTest:
         # set the center somewhere else
         # in a game, you would set center to a playable character
         self.map_layer.center(self.center)
+        print(self.map_layer.view_rect.center)
 
     def run(self) -> None:
         clock = pygame.time.Clock()

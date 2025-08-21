@@ -115,9 +115,7 @@ class IsometricBufferedRenderer(BufferedRenderer):
         self._x_offset = iso[0]
         self._y_offset = iso[1]
 
-        print(self._tile_view.size)
         assert self._buffer
-        print(self._buffer.get_size())
 
         # center the buffer on the screen
         self._x_offset += (self._buffer.get_width() - self.view_rect.width) // 2
