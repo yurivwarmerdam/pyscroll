@@ -63,9 +63,9 @@ class ScrollTest:
         self.text_overlay = [f.render(i, 1, (180, 180, 0)) for i in t]
 
         # set our initial viewpoint in the center of the map
-        self.center = [
-            self.map_layer.map_rect.width / 2,
-            self.map_layer.map_rect.height / 2,
+        self.center = [0,0
+            # self.map_layer.map_rect.width / 2,
+            # self.map_layer.map_rect.height / 2,
         ]
 
         # the camera vector is used to handle camera movement
@@ -93,6 +93,7 @@ class ScrollTest:
 
     def handle_input(self) -> None:
         """Simply handle pygame input events"""
+        pass
         for event in pygame.event.get():
             if event.type == QUIT:
                 self.running = False
@@ -108,26 +109,26 @@ class ScrollTest:
                 init_screen(event.w, event.h)
                 self.map_layer.set_size((event.w, event.h))
 
-        # these keys will change the camera vector
-        # the camera vector changes the center of the viewport,
-        # which causes the map to scroll
+        # # these keys will change the camera vector
+        # # the camera vector changes the center of the viewport,
+        # # which causes the map to scroll
 
-        # using get_pressed is slightly less accurate than testing for events
-        # but is much easier to use.
-        pressed = pygame.key.get_pressed()
-        if pressed[K_UP]:
-            self.camera_acc[1] = -SCROLL_SPEED * self.last_update_time
-        elif pressed[K_DOWN]:
-            self.camera_acc[1] = SCROLL_SPEED * self.last_update_time
-        else:
-            self.camera_acc[1] = 0
+        # # using get_pressed is slightly less accurate than testing for events
+        # # but is much easier to use.
+        # pressed = pygame.key.get_pressed()
+        # if pressed[K_UP]:
+        #     self.camera_acc[1] = -SCROLL_SPEED * self.last_update_time
+        # elif pressed[K_DOWN]:
+        #     self.camera_acc[1] = SCROLL_SPEED * self.last_update_time
+        # else:
+        #     self.camera_acc[1] = 0
 
-        if pressed[K_LEFT]:
-            self.camera_acc[0] = -SCROLL_SPEED * self.last_update_time
-        elif pressed[K_RIGHT]:
-            self.camera_acc[0] = SCROLL_SPEED * self.last_update_time
-        else:
-            self.camera_acc[0] = 0
+        # if pressed[K_LEFT]:
+        #     self.camera_acc[0] = -SCROLL_SPEED * self.last_update_time
+        # elif pressed[K_RIGHT]:
+        #     self.camera_acc[0] = SCROLL_SPEED * self.last_update_time
+        # else:
+        #     self.camera_acc[0] = 0
 
     def update(self, td) -> None:
         self.last_update_time = td
