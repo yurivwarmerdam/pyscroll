@@ -6,6 +6,26 @@ from pygame.surface import Surface
 
 log = logging.getLogger(__file__)
 
+## TODO:
+# - read through whole class
+# - read through orthographic class
+# - keep notes on thoughts
+# - consider renaming variables and such
+#
+## Wants:
+# - camera-space posiiton
+# - intuitive 0,0
+# - non-single-tile-sized tile positions (TileOffset from tsx)
+# - start using clamped camera from base class in center() (and for that to.. work.)
+
+# Notes:
+# Needs world_to_map, map_to_world
+# Is it correct that I'm inheriting _calculate_zoom_buffer_size?
+# The fact that I'm using the original version sugests that 
+# I'm drawing 2x more tiles than I strictly have to.
+# This might still be faster, though, 
+# since making the selection itself may be more expensive
+
 
 def vector3_to_iso(
     vector3: tuple[int, int, int], offset: tuple[int, int] = (0, 0)
@@ -42,6 +62,8 @@ class IsometricBufferedRenderer(BufferedRenderer):
 
     - coalescing of surfaces is not supported
     - drawing may have depth sorting issues
+    - blits in _draw_surface()?
+    
     """
 
     def _draw_surfaces(self, surface, rect, surfaces) -> None:
