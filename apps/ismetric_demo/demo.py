@@ -206,7 +206,7 @@ if __name__ == "__main__":
     except IndexError:
         logger.info("no TMX map specified, using default")
         filename = "another_island.tmx"
-
+        # filename = "tmp.tmx"
     try:
         test = ScrollTest(filename)
         test.run()
