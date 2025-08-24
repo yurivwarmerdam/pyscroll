@@ -17,8 +17,9 @@ log = logging.getLogger(__file__)
 # - intuitive 0,0
 # - non-single-tile-sized tile positions (TileOffset from tsx)
 # - start using clamped camera from base class in center() (and for that to.. work.)
+# - blits in _draw_surface()?
 
-# Notes:
+## Notes:
 # Needs world_to_map, map_to_world
 # Is it correct that I'm inheriting _calculate_zoom_buffer_size?
 # The fact that I'm using the original version sugests that 
@@ -62,7 +63,6 @@ class IsometricBufferedRenderer(BufferedRenderer):
 
     - coalescing of surfaces is not supported
     - drawing may have depth sorting issues
-    - blits in _draw_surface()?
     
     """
 
@@ -111,7 +111,8 @@ class IsometricBufferedRenderer(BufferedRenderer):
         twh = tw // 2
         thh = th // 2
 
-        for x, y, l, tile in iterator:
+        # Note: l and l2 are always 0
+        for x, y, l, tile, l2 in iterator:
             # tile = map_get(gid, tile)
             x -= self._tile_view.left
             y -= self._tile_view.top
@@ -162,20 +163,20 @@ class IsometricBufferedRenderer(BufferedRenderer):
             self._tile_view.move_ip(dx, dy)
             self.redraw_tiles(self._buffer)
 
-    # def redraw_tiles(self):
-    #     """ redraw the visible portion of the buffer -- it is slow.
-    #     """
-    #     if self._clear_color:
-    #         self._buffer.fill(self._clear_color)
-    #
-    #     v = self._tile_view
-    #     self._tile_queue = []
-    #     for x in range(v.left, v.right):
-    #         for y in range(v.top, v.bottom):
-    #             ix, iy = vector2_to_iso((x, y))
-    #             tile = self.data.get_tile_image((ix, iy, 0))
-    #             if tile:
-    #                 self._tile_queue.append((x, y, 0, tile, 0))
-    #                 print((x, y), (ix, iy))
-    #
-    #     self._flush_tile_queue()
+    def redraw_tiles(self,surface:Surface):
+        """ redraw the visible portion of the buffer -- it is slow.
+        """
+        if self._clear_color:
+            self._buffer.fill(self._clear_color)
+    
+        v = self._tile_view
+        self._tile_queue = []
+        for x in range(v.left, v.right):
+            for y in range(v.top, v.bottom):
+                ix, iy = vector2_to_iso((x, y))
+                tile = self.data.get_tile_image(ix, iy, 0)
+                if tile:
+                    self._tile_queue.append((x, y, 0, tile, 0))
+                    # print((x, y), (ix, iy))
+    
+        self._flush_tile_queue(surface)
