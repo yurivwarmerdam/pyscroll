@@ -22,10 +22,11 @@ log = logging.getLogger(__file__)
 ## Notes:
 # Needs world_to_map, map_to_world
 # Is it correct that I'm inheriting _calculate_zoom_buffer_size?
-# The fact that I'm using the original version sugests that 
+# The fact that I'm using the original version sugests that
 # I'm drawing 2x more tiles than I strictly have to.
-# This might still be faster, though, 
+# This might still be faster, though,
 # since making the selection itself may be more expensive
+# Quadtree stuff...? whuzza?
 
 
 def vector3_to_iso(
@@ -63,7 +64,7 @@ class IsometricBufferedRenderer(BufferedRenderer):
 
     - coalescing of surfaces is not supported
     - drawing may have depth sorting issues
-    
+
     """
 
     def _draw_surfaces(self, surface, rect, surfaces) -> None:
@@ -73,8 +74,10 @@ class IsometricBufferedRenderer(BufferedRenderer):
     def _initialize_buffers(self, view_size: Vector2DInt) -> None:
         """Create the buffers to cache tile drawing
 
-        :param view_size: (int, int): size of the draw area
-        :return: None
+        args:
+            view_size: size of the draw area
+
+            TODO: BUffer size seems MOSTLY correct. Some underdrawing happens, but not too much.
         """
         import math
 
@@ -84,12 +87,15 @@ class IsometricBufferedRenderer(BufferedRenderer):
         mw, mh = self.data.map_size
         buffer_tile_width = int(math.ceil(view_size[0] / tw) + 2) * 2
         buffer_tile_height = int(math.ceil(view_size[1] / th) + 2) * 2
+        # TODO: buffer_pixel_size does not feel like it would be right.
         buffer_pixel_size = buffer_tile_width * tw, buffer_tile_height * th
 
+        # TODO: Same with map_rect
         self.map_rect = Rect(0, 0, mw * tw, mh * th)
         self.view_rect.size = view_size
         self._tile_view = Rect(0, 0, buffer_tile_width, buffer_tile_height)
         self._redraw_cutoff = 1  # TODO: optimize this value
+        print(view_size, buffer_pixel_size)
         self._create_buffers(view_size, buffer_pixel_size)
         self._half_width = view_size[0] // 2
         self._half_height = view_size[1] // 2
@@ -163,12 +169,11 @@ class IsometricBufferedRenderer(BufferedRenderer):
             self._tile_view.move_ip(dx, dy)
             self.redraw_tiles(self._buffer)
 
-    def redraw_tiles(self,surface:Surface):
-        """ redraw the visible portion of the buffer -- it is slow.
-        """
+    def redraw_tiles(self, surface: Surface):
+        """redraw the visible portion of the buffer -- it is slow."""
         if self._clear_color:
             self._buffer.fill(self._clear_color)
-    
+
         v = self._tile_view
         self._tile_queue = []
         for x in range(v.left, v.right):
@@ -178,5 +183,5 @@ class IsometricBufferedRenderer(BufferedRenderer):
                 if tile:
                     self._tile_queue.append((x, y, 0, tile, 0))
                     # print((x, y), (ix, iy))
-    
+
         self._flush_tile_queue(surface)

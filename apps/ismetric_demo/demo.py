@@ -50,7 +50,7 @@ class ScrollTest:
 
         # create new renderer
         self.map_layer = pyscroll.isometric.IsometricBufferedRenderer(
-            map_data, screen.get_size()
+            map_data, screen.get_size(),clamp_camera=True
         )
 
         # create a font and pre-render some text to be displayed over the map
@@ -61,15 +61,17 @@ class ScrollTest:
         self.text_overlay = [f.render(i, 1, (180, 180, 0)) for i in t]
 
         # set our initial viewpoint in the center of the map
-        self.center = [0,0
+        self.center = [
+            0,0
             # -self.map_layer.map_rect.width / 2,
             # -self.map_layer.map_rect.height / 2,
         ]
 
         # the camera vector is used to handle camera movement
-        self.camera_acc = [0, 0, 0]
-        self.camera_vel = [0, 0, 0]
+        self.camera_acc = [0, 0]
+        self.camera_vel = [0, 0]
         self.last_update_time = 0
+        self.map_layer.center(self.center)
 
         # true when running
         self.running = False
@@ -164,7 +166,7 @@ class ScrollTest:
         # set the center somewhere else
         # in a game, you would set center to a playable character
         self.map_layer.center(self.center)
-        print(self.map_layer.view_rect.center)
+        # print(self.map_layer.view_rect.center)
 
     def run(self) -> None:
         clock = pygame.time.Clock()
