@@ -50,7 +50,7 @@ class ScrollTest:
 
         # create new renderer
         self.map_layer = pyscroll.isometric.IsometricBufferedRenderer(
-            map_data, screen.get_size(),clamp_camera=True
+            map_data, screen.get_size(),clamp_camera=False
         )
 
         # create a font and pre-render some text to be displayed over the map
@@ -191,6 +191,7 @@ class ScrollTest:
                 screen.fill("red")
                 self.draw(screen)
                 pygame.display.flip()
+                print(fps_log[0])
 
         except KeyboardInterrupt:
             self.running = False

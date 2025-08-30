@@ -153,24 +153,14 @@ class IsometricBufferedRenderer(BufferedRenderer):
         # adjust the view if the view has changed without a redraw
         dx = int(left - self._tile_view.left)
         dy = int(top - self._tile_view.top)
-        view_change = max(abs(dx), abs(dy))
 
-        # force redraw every time: edge queuing not supported yet
-        self._redraw_cutoff = 0
-
-        if view_change and (view_change <= self._redraw_cutoff):
-            self._buffer.scroll(-dx * tw, -dy * th)
-            self._tile_view.move_ip(dx, dy)
-            self._queue_edge_tiles(dx, dy)
-            self._flush_tile_queue()
-
-        elif view_change > self._redraw_cutoff:
-            # logger.info('scrolling too quickly.  redraw forced')
-            self._tile_view.move_ip(dx, dy)
-            self.redraw_tiles(self._buffer)
+        # logger.info('scrolling too quickly.  redraw forced')
+        self._tile_view.move_ip(dx, dy)
+        self.redraw_tiles(self._buffer)
 
     def redraw_tiles(self, surface: Surface):
         """redraw the visible portion of the buffer -- it is slow."""
+        
         if self._clear_color:
             self._buffer.fill(self._clear_color)
 

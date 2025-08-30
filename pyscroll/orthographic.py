@@ -537,6 +537,7 @@ class BufferedRenderer:
             dy: Edge along Y axis to enqueue
 
         """
+        print(f"queueing: {dx} : {dy}")
         v = self._tile_view
         tw, th = self.data.tile_size
         self._tile_queue = iter([])
